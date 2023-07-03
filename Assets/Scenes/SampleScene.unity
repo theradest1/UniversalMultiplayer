@@ -738,6 +738,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   server: {fileID: 1836363828}
+  otherClientPrefab: {fileID: 2850159691832155934, guid: 636f344e4258307418f1fab4ef0b7e5b, type: 3}
 --- !u!114 &1836363828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -750,8 +751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f40d18f0f8339804baa308c4bce7c52d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SERVERPORT: 12345
-  SERVERADDRESS: localhost
+  ID: 0
   latency: 0
   messageTimoutMS: 1000
   playerTransform: {fileID: 769907059}

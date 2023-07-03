@@ -8,14 +8,12 @@ const { get } = require('http');
 
 const validCommands = ['u', 'e', 'newClient', 'leave']; // u = update, e = event (short for conservation of bandwidth)
 
-currentID = 0;
-TPS = 24;
+currentID = 0; //the ID given to players when they join
+TPS = 5; //Ticks per second - this is how fast you want players to update their position and check for events
 SERVERPORT = 12345;
 
 const maxChecksBeforeDisconnect = 3; //this times diconnect interval is how long it takes (in ms) for a player to get disconnected
-const disconnectInterval = 1000; //in ms
-setInterval(checkDisconnectTimers, disconnectInterval);
-packetCounter = 0; //will be inaccurate if disconnect interval is different than 1000
+setInterval(checkDisconnectTimers, 1000);
 
 playerTransformInfo = []; //position and rotation
 playerInfo = []; //usernames, might be more later
@@ -140,8 +138,6 @@ function newClient(info, senderPort, senderAddress) {
 	playerTransformInfo.push("(0, 0, 0)~(0, 0, 0, 1)");
 	playerDisconnectTimers.push(0);
 	currentPlayerIDs.push(currentID);
-
-	//eventsToSend[currentPlayerIDs.indexOf(parseInt(currentID))] += "tps~" + TPS + "|";
 
 	currentID++;
 }

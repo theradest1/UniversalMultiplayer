@@ -13,7 +13,7 @@ public class UDPServer : MonoBehaviour
 	IPEndPoint remoteEndPoint;
 	int SERVERPORT;
 	string SERVERADDRESS;
-	int ID;
+	[HideInInspector] public int ID;
 	int TPS;
 	public int latency = 0;
 	[SerializeField] int messageTimoutMS = 1000;
@@ -86,12 +86,12 @@ public class UDPServer : MonoBehaviour
 		info = Encoding.ASCII.GetString(receiveBytes);
 
 		//processing response
-		print("Got message: " + info);
+		serverEvents.rawEvents(info);
 	}
 
 	public void sendMessage(string message)
 	{
-		Debug.Log("Sent: " + message);
+		//Debug.Log("Sent: " + message);
 		byte[] sendBytes = Encoding.ASCII.GetBytes(message);
 		client.Send(sendBytes, sendBytes.Length);
 	}
