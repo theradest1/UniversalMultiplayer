@@ -15,7 +15,15 @@ public class UDPServer : MonoBehaviour
 	string SERVERADDRESS;
 	int ID;
 	int TPS;
+	public int latency = 0;
+	[SerializeField] int messageTimoutMS = 1000;
+	[SerializeField] Transform playerTransform;
 	[SerializeField] ServerEvents serverEvents;
+
+	private void Start()
+	{
+		connectToServer("Bruv", 12345, "localhost");
+	}
 
 	public async void connectToServer(string username, int serverPort, string serverAddress, int clientPort = -1)
 	{
@@ -45,13 +53,15 @@ public class UDPServer : MonoBehaviour
 			await Task.WhenAny(Task.Run(() => receiveBytes = client.Receive(ref remoteEndPoint)), Task.Delay(1000));
 			Debug.Log("Accepted, processing data...");
 			string recieveString = Encoding.ASCII.GetString(receiveBytes);
-			ID = int.Parse(recieveString.Split('~')[1]);
-			TPS = int.Parse(recieveString.Split('~')[2]);
+			Debug.Log("Data: " + recieveString);
+			ID = int.Parse(recieveString.Split('~')[0]);
+			TPS = int.Parse(recieveString.Split('~')[1]);
 
 			Debug.Log("User ID: " + ID);
 			Debug.Log("Given TPS: " + TPS);
 
-			serverUpdater(1/(float)TPS);
+			//start main update loop
+			InvokeRepeating("serverUpdater", 0, 1 / (float)TPS);
 		}
 		catch (Exception e)
 		{
@@ -59,10 +69,24 @@ public class UDPServer : MonoBehaviour
 			return;
 		}
 	}
-	async void serverUpdater(float messageIncrements)
+
+
+	async void serverUpdater()
 	{
-		Invoke("serverUpdater", messageIncrements);
-		Debug.Log("Update");
+		//send
+		sendMessage("u~" + ID + "~" + playerTransform.position + "~" + playerTransform.eulerAngles);
+
+		//recieve
+		string info = "";
+		byte[] receiveBytes = Encoding.ASCII.GetBytes("EMPTY");
+
+		float latencyTimer = Time.time;
+		await Task.WhenAny(Task.Run(() => receiveBytes = client.Receive(ref remoteEndPoint)), Task.Delay(messageTimoutMS));
+		latency = (int)Mathf.Round((Time.time - latencyTimer) * 1000);
+		info = Encoding.ASCII.GetString(receiveBytes);
+
+		//processing response
+		print("Got message: " + info);
 	}
 
 	public void sendMessage(string message)
@@ -72,8 +96,4 @@ public class UDPServer : MonoBehaviour
 		client.Send(sendBytes, sendBytes.Length);
 	}
 
-	void onMessageRecieve(string message)
-	{
-		serverEvents.processEvent(message);
-	}
 }

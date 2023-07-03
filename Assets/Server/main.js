@@ -40,6 +40,7 @@ server.on('listening', () => {
 server.on('message', (msg, senderInfo) => {
 	packetCounter++;
 	msg = msg + "";
+	console.log(msg);
 	try {
 		if (validCommands.includes(msg.split("~")[0])) {
 			eval(msg.split("~")[0] + "(\"" + msg + "\", " + senderInfo.port + ", \"" + senderInfo.address + "\")");
@@ -120,10 +121,7 @@ function leave(info, senderPort, senderAddress) {
 }
 
 function newClient(info, senderPort, senderAddress) {
-	console.log("Quick set data: " + settings);
-	console.log(currentID + "|" + settings);
-	console.log(currentID);
-	server.send(currentID + "|" + settings, senderPort, senderAddress);
+	server.send(currentID + "~" + TPS, senderPort, senderAddress);
 
 	splitInfo = info.split("~");
 
@@ -143,7 +141,7 @@ function newClient(info, senderPort, senderAddress) {
 	playerDisconnectTimers.push(0);
 	currentPlayerIDs.push(currentID);
 
-	eventsToSend[currentPlayerIDs.indexOf(parseInt(currentID))] += "tps~" + TPS + "|setClock~" + gameClock + "|newMap~" + currentMap + "|";
+	//eventsToSend[currentPlayerIDs.indexOf(parseInt(currentID))] += "tps~" + TPS + "|";
 
 	currentID++;
 }
@@ -151,13 +149,13 @@ function newClient(info, senderPort, senderAddress) {
 function e(info, senderPort, senderAddress) {
 	splitInfo = info.split("~");
 	newEvent = info.substring(splitInfo[0].length + 1, info.length);
-	//console.log(newEvent);
+	console.log("added event: " + newEvent);
 	addEventToAll(newEvent);
 }
 
 async function u(info, senderPort, senderAddress) {
 	splitInfo = info.split("~")
-	//console.log("Player with ID " + splitInfo[1] + " updated");
+	console.log("Player with ID " + splitInfo[1] + " updated");
 	transformsToSend = "";
 	for (playerIndex in currentPlayerIDs) {
 		if (currentPlayerIDs[playerIndex] != splitInfo[1]) {
