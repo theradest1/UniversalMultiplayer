@@ -22,7 +22,7 @@ public class UDPServer : MonoBehaviour
 
 	private void Start()
 	{
-		connectToServer("Bruv", 12345, "localhost");
+		connectToServer("Username", 12345, "localhost");
 	}
 
 	public async void connectToServer(string username, int serverPort, string serverAddress, int clientPort = -1)
