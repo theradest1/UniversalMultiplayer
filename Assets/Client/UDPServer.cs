@@ -20,11 +20,6 @@ public class UDPServer : MonoBehaviour
 	[SerializeField] Transform playerTransform;
 	[SerializeField] ServerEvents serverEvents;
 
-	private void Start()
-	{
-		connectToServer("Username", 12345, "localhost");
-	}
-
 	public async void connectToServer(string username, int serverPort, string serverAddress, int clientPort = -1)
 	{
 		SERVERADDRESS = serverAddress;
