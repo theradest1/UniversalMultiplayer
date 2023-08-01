@@ -716,8 +716,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1836363829}
-  - component: {fileID: 1836363828}
-  - component: {fileID: 1836363827}
   - component: {fileID: 1836363830}
   m_Layer: 0
   m_Name: game manager
@@ -726,37 +724,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1836363827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1836363826}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af0404b7a6f4f4e458daa5340de78155, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  server: {fileID: 1836363828}
-  otherClientPrefab: {fileID: 2850159691832155934, guid: 636f344e4258307418f1fab4ef0b7e5b, type: 3}
---- !u!114 &1836363828
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1836363826}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f40d18f0f8339804baa308c4bce7c52d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ID: 0
-  latency: 0
-  messageTimoutMS: 1000
-  playerTransform: {fileID: 769907059}
-  serverEvents: {fileID: 1836363827}
 --- !u!4 &1836363829
 Transform:
   m_ObjectHideFlags: 0
@@ -781,9 +748,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1836363826}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 534b826054dc8654783d8638813bd2ed, type: 3}
+  m_Script: {fileID: 11500000, guid: 461a0854047345643bdd2275f277bf50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  server: {fileID: 1836363828}
-  serverPort: 12345
-  serverIP: 192.36.176.139
+  TCP_PORT: 4242
+  UDP_PORT: 6969
+  SERVER_IP: 127.0.0.1
