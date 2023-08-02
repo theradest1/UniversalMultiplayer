@@ -2,9 +2,9 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using System.Threading.Tasks;
+using System.Threading;
 
 public class Client: MonoBehaviour
 {
@@ -12,6 +12,9 @@ public class Client: MonoBehaviour
 	public int UDP_PORT = 6969;
 	public string SERVER_IP = "127.0.0.1";
 	public int udpTimoutMS = 1000;
+
+	IPEndPoint remoteEndPoint;
+	UdpClient udpClient;
 
 	private void Start()
 	{
@@ -33,8 +36,15 @@ public class Client: MonoBehaviour
 			string receivedString = Encoding.ASCII.GetString(receiveBytes);
 			print("UDP Server says: " + receivedString);
 		}*/
-		udpReciever();
-		sendUDPMessage("Hi UDP (:");
+		initUDP();
+
+		//new Thread(() =>
+		//{
+		//	Thread.CurrentThread.IsBackground = true;
+			udpReciever();
+		//}).Start();
+
+		InvokeRepeating("TestMessages", 1, .05f);
 
 		// TCP client
 		using (TcpClient tcpClient = new TcpClient())
@@ -59,18 +69,27 @@ public class Client: MonoBehaviour
 		}
 	}
 
+	void TestMessages()
+	{
+		sendUDPMessage("Hi UDP (:");
+	}
+
+	void initUDP()
+	{
+		remoteEndPoint = new IPEndPoint(IPAddress.Any, UDP_PORT);
+
+		udpClient = new UdpClient();
+		udpClient.Connect(SERVER_IP, UDP_PORT);
+	}
+
 	async void udpReciever()
 	{
-		UdpClient udpClient = new UdpClient();
-		udpClient.Connect(SERVER_IP, UDP_PORT);
-		IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, UDP_PORT);
-
 		while(true)
 		{
 			byte[] receiveBytes = new byte[0];
 			await Task.Run(() => receiveBytes = udpClient.Receive(ref remoteEndPoint));
-			string receivedString = Encoding.ASCII.GetString(receiveBytes);
-			processUDPMessage(receivedString);
+			string message = Encoding.ASCII.GetString(receiveBytes);
+			processUDPMessage(message);
 		}
 	}
 
@@ -79,14 +98,10 @@ public class Client: MonoBehaviour
 		//load message
 		byte[] udpData = Encoding.ASCII.GetBytes(message);
 
-		//create client
-		UdpClient udpClient = new UdpClient(); 
-		udpClient.Connect(SERVER_IP, UDP_PORT);
-
 		//send message
 		udpClient.Send(udpData, udpData.Length);
 	}
-	
+
 	void processUDPMessage(string message)
 	{
 		Debug.Log("Got UDP message from server:\n" + message);
