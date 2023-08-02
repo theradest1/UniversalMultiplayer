@@ -11,67 +11,41 @@ public class Client: MonoBehaviour
 	public int TCP_PORT = 4242;
 	public int UDP_PORT = 6969;
 	public string SERVER_IP = "127.0.0.1";
-	public int udpTimoutMS = 1000;
 
 	IPEndPoint remoteEndPoint;
 	UdpClient udpClient;
 
+	TcpClient tcpClient;
+	NetworkStream tcpStream;
+
 	private void Start()
 	{
-		Debug.Log("starting server...");
-		// UDP client
-		/*using (UdpClient udpClient = new UdpClient())
-		{
-			//create message
-			string udpMessage = "Hello UDP Server!";
-			byte[] udpData = Encoding.ASCII.GetBytes(udpMessage);
-
-			//create and send using client
-			udpClient.Connect(SERVER_IP, UDP_PORT);
-			udpClient.Send(udpData, udpData.Length);
-
-			IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, UDP_PORT);
-			byte[] receiveBytes = udpClient.Receive(ref remoteEndPoint);
-
-			string receivedString = Encoding.ASCII.GetString(receiveBytes);
-			print("UDP Server says: " + receivedString);
-		}*/
 		initUDP();
+		initTCP();
 
+		//not sure if I want to do threading or not... idk if it actually improves anything
+
+		//start udp message checking
 		//new Thread(() =>
 		//{
 		//	Thread.CurrentThread.IsBackground = true;
 			udpReciever();
 		//}).Start();
+		
+		//start tcp message checking
+		//new Thread(() =>
+		//{
+		//	Thread.CurrentThread.IsBackground = true;
+			tcpReciever();
+		//}).Start();
 
 		InvokeRepeating("TestMessages", 1, .05f);
-
-		// TCP client
-		using (TcpClient tcpClient = new TcpClient())
-		{
-			tcpClient.Connect(SERVER_IP, TCP_PORT);
-
-			NetworkStream tcpStream = tcpClient.GetStream();
-			string tcpMessage = "newClient~Test Username";
-			byte[] tcpData = Encoding.ASCII.GetBytes(tcpMessage);
-			byte[] tcpReceivedData = new byte[1024];
-
-			float startTime = Time.time;
-
-			tcpStream.Write(tcpData, 0, tcpData.Length);
-			int bytesRead = tcpStream.Read(tcpReceivedData, 0, tcpReceivedData.Length);
-
-			float latency = Time.time - startTime;
-
-			Debug.Log("Latency of " + latency);
-			string tcpResponse = Encoding.ASCII.GetString(tcpReceivedData, 0, bytesRead);
-			Debug.Log("TCP Server says: " + tcpResponse);
-		}
 	}
 
 	void TestMessages()
 	{
 		sendUDPMessage("Hi UDP (:");
+		sendTCPMessage("Hi TCP (:");
 	}
 
 	void initUDP()
@@ -80,6 +54,13 @@ public class Client: MonoBehaviour
 
 		udpClient = new UdpClient();
 		udpClient.Connect(SERVER_IP, UDP_PORT);
+	}
+
+	void initTCP()
+	{
+		tcpClient = new TcpClient();
+		tcpClient.Connect(SERVER_IP, TCP_PORT);
+		tcpStream = tcpClient.GetStream();
 	}
 
 	async void udpReciever()
@@ -91,6 +72,26 @@ public class Client: MonoBehaviour
 			string message = Encoding.ASCII.GetString(receiveBytes);
 			processUDPMessage(message);
 		}
+	}
+
+	async void tcpReciever()
+	{
+		while(true)
+		{
+			byte[] tcpReceivedData = new byte[1024];
+			int bytesRead = 0; //this might cause problems, but I don't think so
+
+			await Task.Run(() => bytesRead = tcpStream.Read(tcpReceivedData, 0, tcpReceivedData.Length));
+			string message = Encoding.ASCII.GetString(tcpReceivedData, 0, bytesRead);
+
+			processTCPMessage(message);
+		}
+	}
+
+	void sendTCPMessage(string message)
+	{
+		byte[] tcpData = Encoding.ASCII.GetBytes(message);
+		tcpStream.Write(tcpData, 0, tcpData.Length);
 	}
 
 	void sendUDPMessage(string message)
