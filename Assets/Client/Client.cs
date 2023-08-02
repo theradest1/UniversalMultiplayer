@@ -18,34 +18,26 @@ public class Client: MonoBehaviour
 	TcpClient tcpClient;
 	NetworkStream tcpStream;
 
+	float udpPingStartTime;
+	float tcpPingStartTime;
+
+	public int udpLatency;
+	public int tcpLatency;
+
 	private void Start()
 	{
 		initUDP();
 		initTCP();
 
-		//not sure if I want to do threading or not... idk if it actually improves anything
-
-		//start udp message checking
-		//new Thread(() =>
-		//{
-		//	Thread.CurrentThread.IsBackground = true;
-			udpReciever();
-		//}).Start();
-		
-		//start tcp message checking
-		//new Thread(() =>
-		//{
-		//	Thread.CurrentThread.IsBackground = true;
-			tcpReciever();
-		//}).Start();
-
-		InvokeRepeating("TestMessages", 1, .05f);
+		InvokeRepeating("Ping", 1, .05f);
 	}
 
-	void TestMessages()
+	void Ping()
 	{
-		sendUDPMessage("Hi UDP (:");
-		sendTCPMessage("Hi TCP (:");
+		udpPingStartTime = Time.time;
+		sendUDPMessage("ping");
+		tcpPingStartTime = Time.time;
+		sendTCPMessage("ping");
 	}
 
 	void initUDP()
@@ -54,6 +46,8 @@ public class Client: MonoBehaviour
 
 		udpClient = new UdpClient();
 		udpClient.Connect(SERVER_IP, UDP_PORT);
+
+		udpReciever();
 	}
 
 	void initTCP()
@@ -61,6 +55,8 @@ public class Client: MonoBehaviour
 		tcpClient = new TcpClient();
 		tcpClient.Connect(SERVER_IP, TCP_PORT);
 		tcpStream = tcpClient.GetStream();
+
+		tcpReciever();
 	}
 
 	async void udpReciever()
@@ -106,10 +102,20 @@ public class Client: MonoBehaviour
 	void processUDPMessage(string message)
 	{
 		Debug.Log("Got UDP message from server:\n" + message);
+
+		if(message == "ping")
+		{
+			udpLatency = (int)((Time.time - udpPingStartTime) * 1000);
+		}
 	}
 
 	void processTCPMessage(string message)
 	{
 		Debug.Log("Got TCP message from server:\n" + message);
+
+		if (message == "ping")
+		{
+			tcpLatency = (int)((Time.time - tcpPingStartTime) * 1000);
+		}
 	}
 }
