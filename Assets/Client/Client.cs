@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Client: MonoBehaviour
@@ -23,7 +24,13 @@ public class Client: MonoBehaviour
 			//create and send using client
 			udpClient.Connect(SERVER_IP, UDP_PORT);
 			udpClient.Send(udpData, udpData.Length);
-		}
+
+			IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, UDP_PORT);
+			byte[] receiveBytes = udpClient.Receive(ref remoteEndPoint);
+
+			string receivedString = Encoding.ASCII.GetString(receiveBytes);
+			print("UDP Server says: " + receivedString);
+	}
 
 		// TCP client
 		using (TcpClient tcpClient = new TcpClient())
@@ -39,7 +46,7 @@ public class Client: MonoBehaviour
 			byte[] tcpReceivedData = new byte[1024];
 			int bytesRead = tcpStream.Read(tcpReceivedData, 0, tcpReceivedData.Length);
 			string tcpResponse = Encoding.ASCII.GetString(tcpReceivedData, 0, bytesRead);
-			Console.WriteLine("TCP Server says: " + tcpResponse);
+			Debug.Log("TCP Server says: " + tcpResponse);
 		}
 	}
 }
