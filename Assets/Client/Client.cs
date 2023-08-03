@@ -5,6 +5,8 @@ using System.Text;
 using UnityEngine;
 using System.Threading.Tasks;
 using System.Threading;
+using TMPro;
+using UnityEngine.UIElements;
 
 public class Client: MonoBehaviour
 {
@@ -24,12 +26,17 @@ public class Client: MonoBehaviour
 	public int udpLatency;
 	public int tcpLatency;
 
+	public TextMeshProUGUI udpPing;
+	public TextMeshProUGUI tcpPing;
+
+	char[] whitespaceChars = { ' ', '\t', '\n', '\r', '\f', '\v' };
+
 	private void Start()
 	{
 		initUDP();
 		initTCP();
 
-		InvokeRepeating("Ping", 1, .05f);
+		InvokeRepeating("Ping", 1, 1f);
 	}
 
 	void Ping()
@@ -78,7 +85,8 @@ public class Client: MonoBehaviour
 			int bytesRead = 0; //this might cause problems, but I don't think so
 
 			await Task.Run(() => bytesRead = tcpStream.Read(tcpReceivedData, 0, tcpReceivedData.Length));
-			string message = Encoding.ASCII.GetString(tcpReceivedData, 0, bytesRead);
+			//string message = Encoding.ASCII.GetString(tcpReceivedData, 0, bytesRead);
+			string message = Encoding.UTF8.GetString(tcpReceivedData, 0, bytesRead);
 
 			processTCPMessage(message);
 		}
@@ -103,19 +111,25 @@ public class Client: MonoBehaviour
 	{
 		Debug.Log("Got UDP message from server:\n" + message);
 
-		if(message == "ping")
+		if(message == "pong")
 		{
-			udpLatency = (int)((Time.time - udpPingStartTime) * 1000);
+			udpPing.text = "UDP Latency: " + (int)((Time.time - udpPingStartTime) * 1000) + "ms";
 		}
 	}
 
 	void processTCPMessage(string message)
 	{
-		Debug.Log("Got TCP message from server:\n" + message);
+		Debug.Log("Got TCP message from server: " + message);
 
-		if (message == "ping")
+		if (message == "pong")
 		{
-			tcpLatency = (int)((Time.time - tcpPingStartTime) * 1000);
+			tcpPing.text = "TCP Latency: " + (int)((Time.time - tcpPingStartTime) * 1000) + "ms";
 		}
+	}
+
+	void OnApplicationQuit()
+	{
+		tcpClient.Close();
+		udpClient.Close();
 	}
 }
