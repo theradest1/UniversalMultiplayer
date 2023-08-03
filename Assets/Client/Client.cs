@@ -23,11 +23,19 @@ public class Client: MonoBehaviour
 	float udpPingStartTime;
 	float tcpPingStartTime;
 
-	public int udpLatency;
-	public int tcpLatency;
+	int udpLatency;
+	int tcpLatency;
+	int sendBytesUDP;
+	int sendBytesTCP;
+	int getBytesUDP;
+	int getBytesTCP;
 
 	public TextMeshProUGUI udpPing;
 	public TextMeshProUGUI tcpPing;
+	public TextMeshProUGUI tcpSendBytes;
+	public TextMeshProUGUI udpSendBytes;
+	public TextMeshProUGUI tcpGetBytes;
+	public TextMeshProUGUI udpGetBytes;
 
 	private void Start()
 	{
@@ -35,7 +43,9 @@ public class Client: MonoBehaviour
 		initTCP();
 
 		InvokeRepeating("Ping", 1, 1f);
-		InvokeRepeating("TestMessage", 1.5f, .008f);
+		InvokeRepeating("DebugText", 1, 1f);
+		InvokeRepeating("TestMessageUDP", 1.5f, .008f);
+		InvokeRepeating("TestMessageTCP", 1.5f, .2f);
 	}
 
 	void Ping()
@@ -45,9 +55,26 @@ public class Client: MonoBehaviour
 		tcpPingStartTime = Time.time;
 		sendTCPMessage("ping");
 	}
-	void TestMessage()
+
+	void DebugText()
+	{
+		tcpSendBytes.text = "TCP send b/s: " + sendBytesTCP;
+		udpSendBytes.text = "UDP send b/s: " + sendBytesUDP;
+		tcpGetBytes.text = "TCP get b/s: " + getBytesTCP;
+		udpGetBytes.text = "UDP get b/s: " + getBytesUDP;
+
+		sendBytesTCP = 0;
+		sendBytesUDP = 0;
+		getBytesTCP = 0;
+		getBytesUDP = 0;
+	}
+
+	void TestMessageUDP()
 	{
 		sendUDPMessage("awgdjhkagwjhkdgjagwdghagwgakjwgfawfawgdjhkagwjhkdgjagwdgha");
+	}
+	void TestMessageTCP()
+	{
 		sendTCPMessage("awgdjhkagwjhkdgjagwdghagwgakjwgfawfawgdjhkagwjhkdgjagwdgha");
 	}
 
@@ -77,6 +104,7 @@ public class Client: MonoBehaviour
 			byte[] receiveBytes = new byte[0];
 			await Task.Run(() => receiveBytes = udpClient.Receive(ref remoteEndPoint));
 			string message = Encoding.ASCII.GetString(receiveBytes);
+			getBytesUDP += Encoding.UTF8.GetByteCount(message);
 			processUDPMessage(message);
 		}
 	}
@@ -89,8 +117,9 @@ public class Client: MonoBehaviour
 			int bytesRead = 0; //this might cause problems, but I don't think so
 
 			await Task.Run(() => bytesRead = tcpStream.Read(tcpReceivedData, 0, tcpReceivedData.Length));
-			//string message = Encoding.ASCII.GetString(tcpReceivedData, 0, bytesRead);
 			string message = Encoding.UTF8.GetString(tcpReceivedData, 0, bytesRead);
+
+			getBytesTCP += Encoding.UTF8.GetByteCount(message);
 
 			processTCPMessage(message);
 		}
@@ -99,12 +128,14 @@ public class Client: MonoBehaviour
 	void sendTCPMessage(string message)
 	{
 		message += "|";
+		sendBytesTCP += Encoding.UTF8.GetByteCount(message);
 		byte[] tcpData = Encoding.ASCII.GetBytes(message);
 		tcpStream.Write(tcpData, 0, tcpData.Length);
 	}
 
 	void sendUDPMessage(string message)
 	{
+		sendBytesUDP += Encoding.UTF8.GetByteCount(message);
 		//load message
 		byte[] udpData = Encoding.ASCII.GetBytes(message);
 
