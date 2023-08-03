@@ -29,8 +29,6 @@ public class Client: MonoBehaviour
 	public TextMeshProUGUI udpPing;
 	public TextMeshProUGUI tcpPing;
 
-	char[] whitespaceChars = { ' ', '\t', '\n', '\r', '\f', '\v' };
-
 	private void Start()
 	{
 		initUDP();
@@ -44,13 +42,13 @@ public class Client: MonoBehaviour
 	{
 		udpPingStartTime = Time.time;
 		sendUDPMessage("ping");
-		//tcpPingStartTime = Time.time;
-		//sendTCPMessage("ping");
+		tcpPingStartTime = Time.time;
+		sendTCPMessage("ping");
 	}
 	void TestMessage()
 	{
-		sendUDPMessage("hi");
-		sendTCPMessage("howdy");
+		sendUDPMessage("awgdjhkagwjhkdgjagwdghagwgakjwgfawfawgdjhkagwjhkdgjagwdgha");
+		sendTCPMessage("awgdjhkagwjhkdgjagwdghagwgakjwgfawfawgdjhkagwjhkdgjagwdgha");
 	}
 
 	void initUDP()
@@ -100,6 +98,7 @@ public class Client: MonoBehaviour
 
 	void sendTCPMessage(string message)
 	{
+		message += "|";
 		byte[] tcpData = Encoding.ASCII.GetBytes(message);
 		tcpStream.Write(tcpData, 0, tcpData.Length);
 	}
@@ -119,8 +118,6 @@ public class Client: MonoBehaviour
 
 		if(message == "pong")
 		{
-			Debug.Log("Start: " + udpPingStartTime);
-			Debug.Log("End: " + Time.time);
 			udpPing.text = "UDP Latency: " + (int)((Time.time - udpPingStartTime) * 1000) + "ms";
 		}
 	}
