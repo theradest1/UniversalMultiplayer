@@ -37,6 +37,7 @@ public class Client: MonoBehaviour
 		initTCP();
 
 		InvokeRepeating("Ping", 1, 1f);
+		InvokeRepeating("TestMessage", 1, .05f);
 	}
 
 	void Ping()
@@ -45,6 +46,13 @@ public class Client: MonoBehaviour
 		sendUDPMessage("ping");
 		tcpPingStartTime = Time.time;
 		sendTCPMessage("ping");
+	}
+	void TestMessage()
+	{
+		udpPingStartTime = Time.time;
+		sendUDPMessage("hi");
+		tcpPingStartTime = Time.time;
+		sendTCPMessage("howdy");
 	}
 
 	void initUDP()
