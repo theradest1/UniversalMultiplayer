@@ -37,21 +37,19 @@ public class Client: MonoBehaviour
 		initTCP();
 
 		InvokeRepeating("Ping", 1, 1f);
-		InvokeRepeating("TestMessage", 1, .05f);
+		InvokeRepeating("TestMessage", 1.5f, .008f);
 	}
 
 	void Ping()
 	{
 		udpPingStartTime = Time.time;
 		sendUDPMessage("ping");
-		tcpPingStartTime = Time.time;
-		sendTCPMessage("ping");
+		//tcpPingStartTime = Time.time;
+		//sendTCPMessage("ping");
 	}
 	void TestMessage()
 	{
-		udpPingStartTime = Time.time;
 		sendUDPMessage("hi");
-		tcpPingStartTime = Time.time;
 		sendTCPMessage("howdy");
 	}
 
@@ -121,6 +119,8 @@ public class Client: MonoBehaviour
 
 		if(message == "pong")
 		{
+			Debug.Log("Start: " + udpPingStartTime);
+			Debug.Log("End: " + Time.time);
 			udpPing.text = "UDP Latency: " + (int)((Time.time - udpPingStartTime) * 1000) + "ms";
 		}
 	}
