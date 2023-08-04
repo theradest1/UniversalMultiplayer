@@ -4,6 +4,7 @@ using System.Text;
 using UnityEngine;
 using System.Threading.Tasks;
 using TMPro;
+using UnityEditor.PackageManager;
 
 public class Client: MonoBehaviour
 {
@@ -43,7 +44,7 @@ public class Client: MonoBehaviour
 
 		InvokeRepeating("Ping", 1, 1f);
 		InvokeRepeating("DebugText", 1, 1f);
-		InvokeRepeating("TestMessageUDP", 1.5f, .00778f);
+		//InvokeRepeating("TestMessageUDP", 1.5f, .00778f);
 	}
 
 	void Ping()
@@ -69,7 +70,7 @@ public class Client: MonoBehaviour
 
 	void TestMessageUDP()
 	{
-		sendUDPMessage("(12414, 334636, 34734)~(2342346, 23463462, 23423452346, 6795685678)"); //simulates transform syncing
+		sendUDPMessage("(12414, 334636, 34734)~(2342346, 23463462, 23423452346, 6795685678)~0"); //simulates transform syncing
 	}
 
 	void initUDP()
@@ -115,11 +116,16 @@ public class Client: MonoBehaviour
 
 			getBytesTCP += Encoding.UTF8.GetByteCount(message);
 
+			Debug.Log("Got TCP Message: " + message);
+
 			//loop through messages
 			string[] messages = message.Split('|');
 			foreach(string finalMessage in messages)
 			{
-				processTCPMessage(finalMessage);
+				if(finalMessage != "") //to get rid of final message
+				{
+					processTCPMessage(finalMessage);
+				}
 			}
 		}
 	}
@@ -144,11 +150,14 @@ public class Client: MonoBehaviour
 
 	void processUDPMessage(string message)
 	{
-		Debug.Log("Got UDP message from server:\n" + message);
 
 		if(message == "pong")
 		{
 			udpPing.text = "UDP Latency: " + (int)((Time.time - udpPingStartTime) * 1000) + "ms";
+		}
+		else
+		{
+			Debug.Log("Got UDP message from server:\n" + message);
 		}
 	}
 
@@ -167,7 +176,11 @@ public class Client: MonoBehaviour
 
 	void OnApplicationQuit()
 	{
+		/*//close tcp
+		tcpStream.Close();
 		tcpClient.Close();
-		udpClient.Close();
+
+		//close udp
+		udpClient.Close();*/ //just makes error rn
 	}
 }

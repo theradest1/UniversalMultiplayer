@@ -9,7 +9,8 @@ public class Events : MonoBehaviour
 
 	private void Start()
 	{
-		InvokeRepeating("testEvent", 1f, .1f);
+		//InvokeRepeating("testEvent", 1f, 1f);
+		sendTestEvent();
 	}
 
     public void newEvent(string eventType, string[] eventInfo)
@@ -17,15 +18,16 @@ public class Events : MonoBehaviour
 		client.sendTCPMessage(eventType + "~" + gatherStringArray(eventInfo));
 	}
 
-	void testEvent()
+	void sendTestEvent()
 	{
+		Debug.Log("Sent test event");
 		string[] data = { "hi", "howdy", "breh" };
-		newEvent("test", data);
+		newEvent("testEvent", data);
 	}
 
 	public void testEvent(string[] data)
 	{
-		Debug.Log("Test Event: " + gatherStringArray(data));
+		Debug.Log("Test Event: " + gatherStringArray(data, " "));
 	}
 
 	public void rawEvent(string message){
@@ -42,17 +44,17 @@ public class Events : MonoBehaviour
 
 
 	//Utill -----------
-	public static string gatherStringArray(string[] array)
+	public static string gatherStringArray(string[] array, string devider = "~")
 	{
 		//combine all
 		string finalString = "";
 		foreach (string part in array)
 		{
-			finalString += part + "~";
+			finalString += part + devider;
 		}
 
 		//get rid of trailing ~
-		finalString = finalString.Substring(0, finalString.Length - 1);
+		finalString = finalString.Substring(0, finalString.Length - devider.Length);
 
 		return finalString;
 	}
