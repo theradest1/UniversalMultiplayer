@@ -1,0 +1,80 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+
+public class Events : MonoBehaviour
+{
+	public Client client;
+
+	private void Start()
+	{
+		InvokeRepeating("testEvent", 1f, .1f);
+	}
+
+    public void newEvent(string eventType, string[] eventInfo)
+	{
+		client.sendTCPMessage(eventType + "~" + gatherStringArray(eventInfo));
+	}
+
+	void testEvent()
+	{
+		string[] data = { "hi", "howdy", "breh" };
+		newEvent("test", data);
+	}
+
+	public void testEvent(string[] data)
+	{
+		Debug.Log("Test Event: " + gatherStringArray(data));
+	}
+
+	public void rawEvent(string message){
+		string[] peices = message.Split('~');
+		try
+		{
+			this.SendMessage(peices[0], sliceStringArray(peices, 1, peices.Length));
+		}
+		catch (Exception e)
+		{
+			Debug.LogWarning(e.Message + ", no event for received event: " + message);
+		}
+	}
+
+
+	//Utill -----------
+	public static string gatherStringArray(string[] array)
+	{
+		//combine all
+		string finalString = "";
+		foreach (string part in array)
+		{
+			finalString += part + "~";
+		}
+
+		//get rid of trailing ~
+		finalString = finalString.Substring(0, finalString.Length - 1);
+
+		return finalString;
+	}
+	public static string[] sliceStringArray(string[] arrayItem, int start, int end)
+	{
+		string[] finalArray = new string[arrayItem.Length];
+		for (int i = start; i < end; i++)
+		{
+			finalArray[i - start] = arrayItem[i];
+		}
+		return finalArray;
+	}
+	public static Vector3 parseVector3(string vector3String)
+	{
+		vector3String = vector3String.Substring(1, vector3String.Length - 2); //get rid of parenthisis
+		string[] parts = vector3String.Split(',');
+		return new Vector3(float.Parse(parts[0]), float.Parse(parts[1]), float.Parse(parts[2]));
+	}
+	public static Quaternion parseQuaternion(string quaternionString)
+	{
+		quaternionString = quaternionString.Substring(1, quaternionString.Length - 2); //get rid of parenthisis
+		string[] parts = quaternionString.Split(',');
+		return new Quaternion(float.Parse(parts[0]), float.Parse(parts[1]), float.Parse(parts[2]), float.Parse(parts[3]));
+	}
+}

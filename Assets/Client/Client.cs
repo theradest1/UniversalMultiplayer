@@ -1,12 +1,9 @@
-using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
 using System.Threading.Tasks;
-using System.Threading;
 using TMPro;
-using UnityEngine.UIElements;
 
 public class Client: MonoBehaviour
 {
@@ -37,6 +34,8 @@ public class Client: MonoBehaviour
 	public TextMeshProUGUI tcpGetBytes;
 	public TextMeshProUGUI udpGetBytes;
 
+	public Events events;
+
 	private void Start()
 	{
 		initUDP();
@@ -44,8 +43,7 @@ public class Client: MonoBehaviour
 
 		InvokeRepeating("Ping", 1, 1f);
 		InvokeRepeating("DebugText", 1, 1f);
-		InvokeRepeating("TestMessageUDP", 1.5f, .008f);
-		InvokeRepeating("TestMessageTCP", 1.5f, .2f);
+		InvokeRepeating("TestMessageUDP", 1.5f, .00778f);
 	}
 
 	void Ping()
@@ -71,11 +69,7 @@ public class Client: MonoBehaviour
 
 	void TestMessageUDP()
 	{
-		sendUDPMessage("awgdjhkagwjhkdgjagwdghagwgakjwgfawfawgdjhkagwjhkdgjagwdgha");
-	}
-	void TestMessageTCP()
-	{
-		sendTCPMessage("awgdjhkagwjhkdgjagwdghagwgakjwgfawfawgdjhkagwjhkdgjagwdgha");
+		sendUDPMessage("(12414, 334636, 34734)~(2342346, 23463462, 23423452346, 6795685678)"); //simulates transform syncing
 	}
 
 	void initUDP()
@@ -121,11 +115,16 @@ public class Client: MonoBehaviour
 
 			getBytesTCP += Encoding.UTF8.GetByteCount(message);
 
-			processTCPMessage(message);
+			//loop through messages
+			string[] messages = message.Split('|');
+			foreach(string finalMessage in messages)
+			{
+				processTCPMessage(finalMessage);
+			}
 		}
 	}
 
-	void sendTCPMessage(string message)
+	public void sendTCPMessage(string message)
 	{
 		message += "|";
 		sendBytesTCP += Encoding.UTF8.GetByteCount(message);
@@ -133,7 +132,7 @@ public class Client: MonoBehaviour
 		tcpStream.Write(tcpData, 0, tcpData.Length);
 	}
 
-	void sendUDPMessage(string message)
+	public void sendUDPMessage(string message)
 	{
 		sendBytesUDP += Encoding.UTF8.GetByteCount(message);
 		//load message
@@ -155,12 +154,15 @@ public class Client: MonoBehaviour
 
 	void processTCPMessage(string message)
 	{
-		Debug.Log("Got TCP message from server: " + message);
+		//Debug.Log("Got TCP message from server: " + message);
 
 		if (message == "pong")
 		{
 			tcpPing.text = "TCP Latency: " + (int)((Time.time - tcpPingStartTime) * 1000) + "ms";
+			return;
 		}
+
+		events.rawEvent(message);
 	}
 
 	void OnApplicationQuit()

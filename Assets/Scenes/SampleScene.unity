@@ -252,7 +252,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1784154906}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -879,7 +879,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1784154906}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1179,7 +1179,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1784154906}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1314,7 +1314,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1784154906}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1449,10 +1449,10 @@ RectTransform:
   m_Children:
   - {fileID: 504251509}
   - {fileID: 1886027699}
-  - {fileID: 1019163481}
-  - {fileID: 1458498727}
   - {fileID: 1511997843}
+  - {fileID: 1019163481}
   - {fileID: 131190201}
+  - {fileID: 1458498727}
   m_Father: {fileID: 1971988058}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1497,6 +1497,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1836363829}
   - component: {fileID: 1836363830}
+  - component: {fileID: 1836363831}
   m_Layer: 0
   m_Name: game manager
   m_TagString: Untagged
@@ -1540,6 +1541,20 @@ MonoBehaviour:
   udpSendBytes: {fileID: 131190202}
   tcpGetBytes: {fileID: 1019163482}
   udpGetBytes: {fileID: 1458498728}
+  events: {fileID: 1836363831}
+--- !u!114 &1836363831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1836363826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ca033a3190cbd748ac316e3a3e6e572, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  client: {fileID: 1836363830}
 --- !u!1 &1886027698
 GameObject:
   m_ObjectHideFlags: 0
