@@ -9,8 +9,8 @@ public class Events : MonoBehaviour
 
 	private void Start()
 	{
-		//InvokeRepeating("testEvent", 1f, 1f);
-		sendTestEvent();
+		InvokeRepeating("sendTestEvent", 1f, 1f);
+		//sendTestEvent();
 	}
 
     public void newEvent(string eventType, string[] eventInfo)
