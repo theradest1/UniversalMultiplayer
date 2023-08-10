@@ -44,7 +44,7 @@ public class Client: MonoBehaviour
 		initUDP();
 		initTCP();
 
-		//InvokeRepeating("Ping", 1, 1f);
+		InvokeRepeating("Ping", 1.5f, 1f);
 		InvokeRepeating("DebugText", 1, 1f);
 		//InvokeRepeating("TestMessageUDP", 1.5f, .00778f);
 	}
