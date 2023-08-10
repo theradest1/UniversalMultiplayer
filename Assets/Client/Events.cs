@@ -6,6 +6,7 @@ using System;
 public class Events : MonoBehaviour
 {
 	public Client client;
+	public int ID;
 
 	private void Start()
 	{
@@ -28,6 +29,13 @@ public class Events : MonoBehaviour
 	public void testEvent(string[] data)
 	{
 		Debug.Log("Test Event: " + gatherStringArray(data, " "));
+	}
+
+	public void clientInfo(string[] data)
+	{
+		Debug.Log(data[0]);
+		ID = int.Parse(data[0]);
+		Debug.Log("Client id: " + ID);
 	}
 
 	public void rawEvent(string message){

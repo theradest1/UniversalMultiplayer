@@ -1542,6 +1542,8 @@ MonoBehaviour:
   tcpGetBytes: {fileID: 1019163482}
   udpGetBytes: {fileID: 1458498728}
   events: {fileID: 1836363831}
+  playerTransform: {fileID: 769907059}
+  camTransform: {fileID: 963194228}
 --- !u!114 &1836363831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1555,6 +1557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   client: {fileID: 1836363830}
+  ID: 0
 --- !u!1 &1886027698
 GameObject:
   m_ObjectHideFlags: 0

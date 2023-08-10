@@ -39,6 +39,9 @@ public class Client: MonoBehaviour
 
 	string tcpMessageQueue = "";
 
+	public Transform playerTransform;
+	public Transform camTransform;
+
 	private void Start()
 	{
 		initUDP();
@@ -46,7 +49,7 @@ public class Client: MonoBehaviour
 
 		InvokeRepeating("Ping", 1, 1f);
 		InvokeRepeating("DebugText", 1, 1f);
-		//InvokeRepeating("TestMessageUDP", 1.5f, .00778f);
+		InvokeRepeating("TransformUpdate", 1.5f, 1f);// .00778f);
 	}
 
 	void Ping()
@@ -70,9 +73,9 @@ public class Client: MonoBehaviour
 		getBytesUDP = 0;
 	}
 
-	void TestMessageUDP()
+	void TransformUpdate()
 	{
-		sendUDPMessage("(12414, 334636, 34734)~(2342346, 23463462, 23423452346, 6795685678)~0"); //simulates transform syncing
+		sendUDPMessage(events.ID + "~" + playerTransform.position + "~" + camTransform.rotation);
 	}
 
 	void initUDP()
