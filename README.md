@@ -25,10 +25,12 @@ ______
 
 Multiplayer specifications:
 
-UDP is very fast along with not requiring as much bandwidth compared to TCP and HTTP, so it is used for constant updating game states such as player positions.
+This uses both UDP and TCP for different cases, taking advantage of what each protocal has to offer.
 
-Since UDP sacrifices consistant messages for speed, TCP is needed for other things such as events. While generally demanding more bandwidth and slightly higher latency, it is the best way to have all messages reach the endpoint in the correct order. This is very important to make sure all clients are on the same page.
+UDP is very fast along with not requiring as much bandwidth compared to TCP and HTTP, so it is used for constant updating game states such as player positions. The main issue with UDP is not having every single message reach the target fully intact or in the right order, but with messages that are being updated every 1/64 second, that doesnt really matter. If a message is messed up, just send the next one instead of re-sending it like what TCP would do.
 
-To make sure the server is extremely fast with very low latency, it is built in c++. It also stores very little data on-server, making it use extremely low amounts of memory. My end goal is to be able to run this server comfortably on a raspberry pi, a very slow but tiny computer.
+Since UDP sacrifices consistant messages for speed, TCP is needed for other things such as events. While generally demanding more bandwidth and slightly higher latency, it is the best way to have all messages reach the endpoint and in the correct order. This is very important to make sure all clients are on the same page.
 
-There is a simple way of adding events that get dealt with automatically by the client, making it fast and easy to use. While making it easy, it also gives you just about total freedom to do what you want with it.
+To make sure the server is extremely fast with very low latency, it is built in c++. It also stores very little data on-server, making it use extremely low amounts of memory (less than a mb in a debug build!!). My end goal is to be able to run this server comfortably on a raspberry pi, a very slow and tiny computer.
+
+There is a simple way of adding events that get dealt with automatically by the client, making it fast and easy to use. While making it easy, it also gives you just about total freedom to do what you want with it. This makes this multiplayer very flexible and able to be used in many cases.
