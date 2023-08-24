@@ -5,7 +5,7 @@ THIS PROJECT IS NOT DONE YET!!!
 (You can still try to use it tho)
 
 This is just the client; the server is in this git repository: 
-https://github.com/theradest1/Project-B-Server-2/tree/no-call-response
+https://github.com/theradest1/Project-B-Server
 
 My plan for this is to make a very basic and flexible multiplayer that works with unity. This would make it very easy to just duplicate this project and start from there instead of making a new server every time. It also will allow other programmers to use or reference the code as an example.
 
